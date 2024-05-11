@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center overflow-y-auto overflow-x-hidden bg-[#C0DDD9] text-black">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-[#C0DDD9] text-black">
       <div className="flex flex-col items-center">
         <Image
           src="https://www.nytimes.com/games/prototype/dist/strands100px.ea3b90d2.svg"
