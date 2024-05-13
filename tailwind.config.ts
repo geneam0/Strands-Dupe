@@ -8,6 +8,9 @@ export default {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
       },
+      spacing: {
+        "1.25": "0.3rem",
+      },
     },
   },
   plugins: [],

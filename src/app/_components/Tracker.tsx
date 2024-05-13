@@ -20,7 +20,7 @@ const Tracker: React.FC = () => {
         </div>
       </div>
       <div>
-        <h1 className="text-center text-xl text-black">
+        <h1 className="text-center text-2xl text-black">
           <strong>{wordsFound}</strong> of <strong>8</strong> theme words found.
         </h1>
       </div>
