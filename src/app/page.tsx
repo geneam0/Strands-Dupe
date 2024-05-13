@@ -18,9 +18,11 @@ export default function Home() {
         <p className="mb-6 w-[304px] text-center text-2xl">
           Find hidden words and uncover the day&apos;s theme
         </p>
-        <button className="mb-4 h-[48px] w-[150px] rounded-full bg-black px-6 py-2 text-white">
-          Play
-        </button>
+        <Link href="/play" legacyBehavior>
+          <a className="mb-4 flex h-[48px] w-[150px] items-center justify-center rounded-full bg-black px-6 py-2 text-white no-underline">
+            Play
+          </a>
+        </Link>
         <p className="text-m">Born May 4, 1997</p>
         <p className="text-m">Puzzle by Gene Lam</p>
       </div>
