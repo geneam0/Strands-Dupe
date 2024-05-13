@@ -21,7 +21,7 @@ const LetterGrid: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center p-5">
-      <div className="mb-5 flex h-12 w-72 items-center justify-center border-2 border-black bg-white p-2 text-center text-xl font-bold uppercase tracking-wider text-black">
+      <div className="mb-5 flex h-12 w-72 items-center justify-center border-2 border-black bg-white p-2 text-center text-2xl font-bold uppercase tracking-wider text-black">
         {selectedLetters}
       </div>
       <div className="grid grid-cols-6 gap-1">

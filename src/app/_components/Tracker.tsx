@@ -10,7 +10,7 @@ const Tracker: React.FC = () => {
       <div className="content-center overflow-hidden rounded-lg shadow-lg">
         <div className="bg-[#aedfee] p-4">
           <h2 className="text-center text-sm font-semibold text-black">
-            TODAY'S THEME
+            TODAY&apos;S THEME
           </h2>
         </div>
         <div className="bg-white p-4">
