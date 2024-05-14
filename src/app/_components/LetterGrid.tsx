@@ -11,9 +11,17 @@ const LetterGrid: React.FC = () => {
 
   useEffect(() => {
     fetch("/words.txt")
-      .then((response) => response.text())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.text();
+      })
       .then((text) => {
         setWordList(text.split(/\r?\n/));
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
       });
   }, []);
 
@@ -87,7 +95,9 @@ const LetterGrid: React.FC = () => {
         setSelectedLetters("");
       });
     } else if (answerList.includes(selectedLetters)) {
-      timer(1, () => {});
+      timer(2, () => {
+        setSelectedLetters("");
+      });
       const newBlueIds = [...selectBlueIds];
       for (const id of selectedIds) {
         newBlueIds.push(id);
