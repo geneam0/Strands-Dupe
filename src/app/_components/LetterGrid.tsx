@@ -1,12 +1,25 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 const LetterGrid: React.FC = () => {
   const [selectedLetters, setSelectedLetters] = useState<string>("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectBlueIds, setSelectedBlueIds] = useState<string[]>([]);
+  const [selectGoldIds, setSelectedGoldIds] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-  const [draggedOverLetters, setDraggedOverLetters] = useState<Set<string>>(
-    new Set(),
-  );
+  const [wordList, setWordList] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("/words.txt")
+      .then((response) => response.text())
+      .then((text) => {
+        setWordList(text.split(/\r?\n/));
+      });
+  }, []);
+
+  const [hints, setHints] = useState(0);
+  const answerList = ["HOUND"];
+  const spangram = "HUSKY";
 
   const letters = [
     ["Y", "R", "E", "O", "U", "D"],
@@ -19,27 +32,103 @@ const LetterGrid: React.FC = () => {
     ["C", "L", "D", "O", "P", "L"],
   ];
 
-  const handleMouseDown = (
-    letter: string,
-    rowIndex: number,
-    letterIndex: number,
-  ) => {
-    setIsDragging(true);
-    const letterId = `${rowIndex}-${letterIndex}`;
-    setDraggedOverLetters(new Set([letterId]));
-    setSelectedLetters(letter);
+  const timer = (seconds: number, callback: () => void) => {
+    setTimeout(callback, seconds * 1000);
   };
 
-  const handleMouseEnter = (rowIndex: number, letterIndex: number) => {
-    if (isDragging) {
-      const letterId = `${rowIndex}-${letterIndex}`;
-      setDraggedOverLetters((prev) => new Set(prev.add(letterId)));
+  const addSelectedLetters = (
+    letter: string,
+    rowIndex: number,
+    colIndex: number,
+  ) => {
+    const newId = `${rowIndex}-${colIndex}`;
+    const currentLength = selectedLetters.length;
+
+    const isAdjacent = (lastId: string, newId: string): boolean => {
+      const [lastRow, lastCol] = lastId.split("-").map(Number);
+      const [newRow, newCol] = newId.split("-").map(Number);
+      if (
+        typeof lastRow === "undefined" ||
+        typeof lastCol === "undefined" ||
+        typeof newRow === "undefined" ||
+        typeof newCol === "undefined"
+      ) {
+        return false;
+      }
+      return Math.abs(lastRow - newRow) <= 1 && Math.abs(lastCol - newCol) <= 1;
+    };
+
+    const lastSelectedId =
+      selectedIds.length > 0 ? selectedIds[selectedIds.length - 1] : null;
+
+    if (currentLength === 0 || !lastSelectedId) {
+      setSelectedIds([newId]);
+      setSelectedLetters(letter);
+    } else if (currentLength < 20 && isAdjacent(lastSelectedId, newId)) {
+      setSelectedIds([...selectedIds, newId]);
+      setSelectedLetters((prevLetters) => prevLetters + letter);
+    } else {
+      setSelectedIds([newId]);
+      setSelectedLetters(letter);
     }
   };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    setDraggedOverLetters(new Set()); // Clear dragged over letters on mouse up
+  const checkWordList = (
+    letter: string,
+    rowIndex: number,
+    colIndex: number,
+  ) => {
+    const newId = `${rowIndex}-${colIndex}`;
+    const currentLength = selectedLetters.length;
+    if (currentLength <= 3) {
+      setSelectedLetters("Too short");
+      setSelectedIds([]);
+      timer(1, () => {
+        setSelectedLetters("");
+      });
+    } else if (answerList.includes(selectedLetters)) {
+      timer(1, () => {});
+      const newBlueIds = [...selectBlueIds];
+      for (const id of selectedIds) {
+        newBlueIds.push(id);
+      }
+      setSelectedBlueIds(newBlueIds);
+      setSelectedIds([]);
+    } else if (selectedLetters === spangram) {
+      setSelectedLetters("SPANGRAM!");
+      timer(3, () => {
+        setSelectedLetters("");
+      });
+      setSelectedGoldIds(selectedIds);
+      setSelectedIds([]);
+    } else if (wordList.includes(selectedLetters)) {
+      setHints((hints) => hints + 1);
+      timer(1, () => {
+        setSelectedLetters("");
+      });
+      setSelectedIds([]);
+      console.log("IN WORD LIST");
+    } else {
+      setSelectedLetters("NOT IN WORD LIST");
+      timer(1, () => {
+        setSelectedLetters("");
+      });
+      setSelectedIds([]);
+    }
+  };
+
+  const handleIsSelecting = (
+    letter: string,
+    rowIndex: number,
+    colIndex: number,
+  ) => {
+    const newId = `${rowIndex}-${colIndex}`;
+
+    if (selectedIds.includes(newId)) {
+      checkWordList(letter, rowIndex, colIndex);
+    } else {
+      addSelectedLetters(letter, rowIndex, colIndex);
+    }
   };
 
   return (
@@ -52,18 +141,26 @@ const LetterGrid: React.FC = () => {
       <div className="grid grid-cols-6 gap-1">
         {letters.map((row, rowIndex) => (
           <React.Fragment key={rowIndex}>
-            {row.map((letter, letterIndex) => {
-              const letterId = `${rowIndex}-${letterIndex}`;
-              const isDraggedOver = draggedOverLetters.has(letterId);
+            {row.map((letter, colIndex) => {
+              const letterId = `${rowIndex}-${colIndex}`;
+              const isBrownSelected = selectedIds.includes(letterId);
+              const isBlueSelected = selectBlueIds.includes(letterId);
+              const isGoldSelected = selectGoldIds.includes(letterId);
               return (
                 <button
-                  key={letterIndex}
-                  className={`m-1.25 flex h-10 w-10 items-center justify-center rounded-full border ${isDraggedOver ? "bg-[#DBD8C5]" : "bg-white"} p-5 text-2xl font-medium text-black transition-colors duration-200`}
+                  key={colIndex}
+                  className={`m-1.25 flex h-10 w-10 items-center justify-center rounded-full border ${
+                    isGoldSelected
+                      ? "bg-[#F8CB2C]"
+                      : isBlueSelected
+                        ? "bg-[#AEDFEE]"
+                        : isBrownSelected
+                          ? "bg-[#DBD8C5]"
+                          : "bg-white"
+                  } p-5 text-2xl font-medium text-black transition-colors duration-200`}
                   onMouseDown={() =>
-                    handleMouseDown(letter, rowIndex, letterIndex)
+                    handleIsSelecting(letter, rowIndex, colIndex)
                   }
-                  onMouseEnter={() => handleMouseEnter(rowIndex, letterIndex)}
-                  onMouseUp={handleMouseUp}
                 >
                   {letter}
                 </button>
