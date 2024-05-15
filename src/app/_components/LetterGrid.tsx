@@ -190,7 +190,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
                   className={`m-1.25 flex h-10 w-10 items-center justify-center rounded-full border 
                   ${
                     isDashedSelected
-                      ? "border-3 border-dashed border-[#49a8c6]"
+                      ? "border-2 border-dashed border-[#49a8c6]"
                       : ""
                   } 
                   ${

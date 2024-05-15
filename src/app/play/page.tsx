@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { api } from "~/trpc/server";
 
 export default function Play() {
-  const [hintCount, setHintCount] = useState(24);
+  const [hintCount, setHintCount] = useState(0);
   const [wordsFound, setWordsFound] = useState(0);
   const [showHint, setShowHint] = useState(false);
 
