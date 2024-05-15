@@ -89,7 +89,7 @@ export default function Play() {
             <p className="text-sm text-[#52524f]">
               Strands #84
               <br />
-              "Deviled eggs anyone?"
+              &quot; Deviled eggs anyone? &quot;
             </p>
             <div className="my-4 text-center text-3xl">
               <h1>{strEdited}</h1>
