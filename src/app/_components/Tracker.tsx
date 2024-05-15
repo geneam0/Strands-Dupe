@@ -1,11 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface TrackerProps {
   hintCount: number;
   setHintCount: React.Dispatch<React.SetStateAction<number>>;
   wordsFound: number;
   setShowHint: (value: boolean) => void;
+  setShowCompletionPopup: (value: boolean) => void;
 }
 
 const Tracker: React.FC<TrackerProps> = ({
@@ -13,6 +14,7 @@ const Tracker: React.FC<TrackerProps> = ({
   setHintCount,
   wordsFound,
   setShowHint,
+  setShowCompletionPopup,
 }) => {
   return (
     <div className="space-y-8">
@@ -36,20 +38,26 @@ const Tracker: React.FC<TrackerProps> = ({
       <div className="mx-auto max-w-md text-center">
         <button
           onClick={() => {
-            setHintCount(hintCount - 3);
-            setShowHint(true);
+            if (wordsFound === 8) {
+              setShowCompletionPopup(true);
+            } else {
+              setHintCount(hintCount - 3);
+              setShowHint(true);
+            }
           }}
-          disabled={hintCount < 3}
+          disabled={hintCount < 3 && wordsFound < 8}
           className={`w-2/5 rounded-full py-2 text-lg font-semibold ${
-            hintCount < 3
-              ? "cursor-not-allowed border-2 border-[#cfcfcf] text-[#cfcfcf]"
-              : "text-white"
+            wordsFound === 8
+              ? "border-2 border-black text-black"
+              : hintCount < 3
+                ? "border-2 border-[#cfcfcf] text-[#cfcfcf]"
+                : "text-white"
           }`}
           style={{
             backgroundImage: `linear-gradient(to right, #000000 ${(hintCount / 3) * 100}%, #ffffff ${(hintCount / 3) * 100}%)`,
           }}
         >
-          Hint
+          {wordsFound === 8 ? "View Results" : "Hint"}
         </button>
       </div>
     </div>
