@@ -170,7 +170,9 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   return (
     <div className="flex flex-col items-center p-5">
       <div
-        className={`mb-5 flex h-12 w-72 items-center justify-center p-2 text-center text-3xl font-bold uppercase tracking-wider text-black`}
+        className={`mb-5 flex h-12 w-72 items-center justify-center p-2 text-center 
+        ${selectedLetters === "NOT IN WORD LIST" ? "text-2xl" : "text-3xl"} 
+        font-bold uppercase tracking-wider text-black`}
       >
         {selectedLetters}
       </div>
@@ -187,7 +189,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
               return (
                 <button
                   key={colIndex}
-                  className={`m-1.25 flex h-10 w-10 items-center justify-center rounded-full border 
+                  className={`m-1.25 flex h-10 w-10 items-center justify-center rounded-full 
                   ${
                     isDashedSelected
                       ? "border-2 border-dashed border-[#49a8c6]"
