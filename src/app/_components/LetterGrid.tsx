@@ -22,8 +22,47 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectBlueIds, setSelectedBlueIds] = useState<string[]>([]);
   const [selectGoldIds, setSelectedGoldIds] = useState<string[]>([]);
-
+  const [hintsUsed, setHintsUsed] = useState(0);
   const [wordList, setWordList] = useState<string[]>([]);
+
+  const spangram = ["2-0", "3-1", "4-1", "5-2", "4-3", "3-4", "3-5"];
+  const letters = [
+    ["R", "N", "G", "A", "A", "N"],
+    ["L", "E", "W", "B", "D", "A"],
+    ["G", "A", "T", "A", "A", "N"],
+    ["M", "R", "D", "U", "E", "R"],
+    ["E", "U", "Y", "B", "R", "R"],
+    ["H", "T", "B", "U", "S", "E"],
+    ["H", "O", "Y", "E", "A", "D"],
+    ["C", "O", "M", "S", "H", "T"],
+  ];
+  const ans_coordinates = [
+    ["4-5", "5-5", "6-4", "6-5"], // READ
+    ["0-0", "0-1", "0-2", "0-3", "1-1", "1-2"], // WAGNER
+    ["6-0", "6-1", "7-0", "7-1", "7-2", "7-3"], // SMOOCH
+    ["0-4", "0-5", "1-3", "1-4", "1-5", "2-4", "2-5"], // BANDANA
+    ["2-2", "2-3", "3-3", "4-4", "5-3", "5-4"], // TAURUS
+    ["3-0", "4-0", "5-0", "5-1", "6-2", "6-3", "7-4", "7-5"], // THEYTHEM
+    ["1-0", "2-1", "3-2", "4-2"], // LADY
+  ];
+
+  const timer = (seconds: number, callback: () => void) => {
+    setTimeout(callback, seconds * 1000);
+  };
+
+  useEffect(() => {
+    if (showHint) {
+      setShowHint(false);
+      setHintsUsed((hintsUsed) => hintsUsed + 1);
+    }
+  }, [showHint, setShowHint, setHintsUsed]);
+
+  useEffect(() => {
+    if (hintsUsed > 7) {
+      setHintsUsed(1);
+    }
+  }, [hintsUsed, setHintsUsed]);
+
   useEffect(() => {
     fetch("/words.txt")
       .then((response) => {
@@ -40,49 +79,27 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       });
   }, []);
 
-  const answerList = [
-    "THEYTHEM",
-    "SMOOCH",
-    "BANDANA",
-    "LADY",
-    "WAGNER",
-    "READ",
-    "TAURUS",
-  ];
-  const spangram = "GRUBBER";
-  const letters = [
-    ["R", "N", "G", "A", "A", "N"],
-    ["L", "E", "W", "B", "D", "A"],
-    ["G", "A", "T", "A", "A", "N"],
-    ["M", "R", "D", "U", "E", "R"],
-    ["E", "U", "Y", "B", "R", "R"],
-    ["H", "T", "B", "U", "S", "E"],
-    ["H", "O", "Y", "E", "A", "D"],
-    ["C", "O", "M", "S", "H", "T"],
-  ];
+  function isArrayEqualUnordered(a: string[], b: string[]): boolean {
+    const sortedA = a.slice().sort();
+    const sortedB = b.slice().sort();
+    return (
+      sortedA.length === sortedB.length &&
+      sortedA.every((element, index) => element === sortedB[index])
+    );
+  }
 
-  const [hintsUsed, setHintsUsed] = useState(0);
-  const ans_coordinates = [
-    ["4-5", "5-5", "6-4", "6-5"], // READ
-    ["0-0", "0-1", "0-2", "0-3", "1-1", "1-2"], // WAGNER
-    ["6-0", "6-1", "7-0", "7-1", "7-2", "7-3"], // SMOOCH
-    ["0-4", "0-5", "1-3", "1-4", "1-5", "2-4", "2-5"], // BANDANA
-    ["2-2", "2-3", "3-3", "4-4", "5-3", "5-4"], // TAURUS
-    ["3-0", "4-0", "5-0", "5-1", "6-2", "6-3", "7-4", "7-5"], // THEYTHEM
-    ["1-0", "2-1", "3-2", "4-2"], // LADY
-    ["2-0", "3-1", "4-1", "5-2", "4-3", "3-4", "3-5"], // GRUBBER
-  ];
-
-  useEffect(() => {
-    if (showHint) {
-      setShowHint(false);
-      setHintsUsed((hintsUsed) => hintsUsed + 1);
+  function checkArrayMatch(
+    arrA: string[],
+    arrB: string[] | string[][],
+  ): boolean {
+    if (Array.isArray(arrB[0])) {
+      return (arrB as string[][]).some((subArray) => {
+        return isArrayEqualUnordered(arrA, subArray);
+      });
+    } else {
+      return isArrayEqualUnordered(arrA, arrB as string[]);
     }
-  }, [showHint, setShowHint]);
-
-  const timer = (seconds: number, callback: () => void) => {
-    setTimeout(callback, seconds * 1000);
-  };
+  }
 
   const addSelectedLetters = (
     letter: string,
@@ -132,16 +149,17 @@ const LetterGrid: React.FC<LetterGridProps> = ({
         setSelectedLetters("");
       });
     };
-
+    console.log(selectedIds);
     if (currentLength <= 3) {
       setSelectedLetters("Too short");
       clearSelectedLetters(1);
-    } else if (answerList.includes(selectedLetters)) {
+    } else if (checkArrayMatch(selectedIds, ans_coordinates)) {
+      console.log("ANS FOUND, BLUE");
       setWordsFound((wordsFound) => wordsFound + 1);
       setStr(str + "🔵");
       setSelectedBlueIds((prevIds) => [...prevIds, ...selectedIds]);
       clearSelectedLetters(2);
-    } else if (selectedLetters === spangram) {
+    } else if (checkArrayMatch(selectedIds, spangram)) {
       setSelectedLetters("SPANGRAM!");
       setStr(str + "🟡");
       setWordsFound((wordsFound) => wordsFound + 1);

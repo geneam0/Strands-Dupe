@@ -4,7 +4,7 @@ import Tracker from "../_components/Tracker";
 import React, { useState, useEffect } from "react";
 
 export default function Play() {
-  const [hintCount, setHintCount] = useState(0);
+  const [hintCount, setHintCount] = useState(50);
   const [wordsFound, setWordsFound] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [showCompletionPopup, setShowCompletionPopup] = useState(false);
