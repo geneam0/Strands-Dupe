@@ -6,6 +6,8 @@ interface LetterGridProps {
   setWordsFound: React.Dispatch<React.SetStateAction<number>>;
   showHint: boolean;
   setShowHint: React.Dispatch<React.SetStateAction<boolean>>;
+  str: string;
+  setStr: (value: string) => void;
 }
 
 const LetterGrid: React.FC<LetterGridProps> = ({
@@ -13,6 +15,8 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   setWordsFound,
   showHint,
   setShowHint,
+  str,
+  setStr,
 }) => {
   const [selectedLetters, setSelectedLetters] = useState<string>("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -134,10 +138,12 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       clearSelectedLetters(1);
     } else if (answerList.includes(selectedLetters)) {
       setWordsFound((wordsFound) => wordsFound + 1);
+      setStr(str + "🔵");
       setSelectedBlueIds((prevIds) => [...prevIds, ...selectedIds]);
       clearSelectedLetters(2);
     } else if (selectedLetters === spangram) {
       setSelectedLetters("SPANGRAM!");
+      setStr(str + "🟡");
       setWordsFound((wordsFound) => wordsFound + 1);
       setSelectedGoldIds(selectedIds);
       clearSelectedLetters(3);

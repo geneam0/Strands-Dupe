@@ -5,18 +5,24 @@ import React, { useState, useEffect } from "react";
 
 export default function Play() {
   const [hintCount, setHintCount] = useState(0);
-  const [wordsFound, setWordsFound] = useState(8);
+  const [wordsFound, setWordsFound] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [showCompletionPopup, setShowCompletionPopup] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [str, setStr] = useState<string>("");
+
+  const timer = (seconds: number, callback: () => void) => {
+    setTimeout(callback, seconds * 1000);
+  };
 
   useEffect(() => {
     if (wordsFound === 8) {
-      setShowCompletionPopup(true);
+      timer(1, () => {
+        setShowCompletionPopup(true);
+      });
     }
   }, [wordsFound]);
 
-  const str = "🔵💡🔵🔵🔵💡🔵🔵🟡🔵";
   const characters = Array.from(str);
   const strEdited: React.ReactNode[] = characters.reduce(
     (acc: React.ReactNode[], curr: string, index: number) => {
@@ -52,23 +58,27 @@ export default function Play() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div className="grid max-w-4xl grid-cols-2 gap-x-24">
-        <div className="col-span-1 my-auto">
+    <div className="lg:flex lg:min-h-screen lg:flex-col lg:items-center lg:justify-center">
+      <div className="lg:grid lg:max-w-4xl lg:grid-cols-2 lg:gap-x-24">
+        <div className="md:items-center lg:col-span-1 lg:my-auto">
           <Tracker
             hintCount={hintCount}
             setHintCount={setHintCount}
             wordsFound={wordsFound}
             setShowHint={setShowHint}
             setShowCompletionPopup={setShowCompletionPopup}
+            str={str}
+            setStr={setStr}
           />
         </div>
-        <div className="col-span-1">
+        <div className="lg:col-span-1">
           <LetterGrid
             setHintCount={setHintCount}
             setWordsFound={setWordsFound}
             showHint={showHint}
             setShowHint={setShowHint}
+            str={str}
+            setStr={setStr}
           />
         </div>
       </div>
