@@ -4,20 +4,20 @@ import React from "react";
 interface TrackerProps {
   hintCount: number;
   setHintCount: React.Dispatch<React.SetStateAction<number>>;
+  setHintsUsed: React.Dispatch<React.SetStateAction<number>>;
   wordsFound: number;
-  setShowHint: (value: boolean) => void;
-  setShowCompletionPopup: (value: boolean) => void;
-  str: string;
-  setStr: (value: string) => void;
+  setShowHint: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowCompletionPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  setStr: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Tracker: React.FC<TrackerProps> = ({
   hintCount,
   setHintCount,
+  setHintsUsed,
   wordsFound,
   setShowHint,
   setShowCompletionPopup,
-  str,
   setStr,
 }) => {
   return (
@@ -46,7 +46,8 @@ const Tracker: React.FC<TrackerProps> = ({
               setShowCompletionPopup(true);
             } else {
               setHintCount(hintCount - 3);
-              setStr(str + "💡");
+              setHintsUsed((hintsUsed) => hintsUsed + 1);
+              setStr((prevStr) => prevStr + "💡");
               setShowHint(true);
             }
           }}

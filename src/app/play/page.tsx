@@ -4,11 +4,13 @@ import Tracker from "../_components/Tracker";
 import React, { useState, useEffect } from "react";
 
 export default function Play() {
-  const [hintCount, setHintCount] = useState(50);
-  const [wordsFound, setWordsFound] = useState(0);
-  const [showHint, setShowHint] = useState(false);
-  const [showCompletionPopup, setShowCompletionPopup] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false);
+  const [hintCount, setHintCount] = useState<number>(0);
+  const [hintsUsed, setHintsUsed] = useState<number>(0);
+  const [wordsFound, setWordsFound] = useState<number>(0);
+  const [showHint, setShowHint] = useState<boolean>(false);
+  const [showCompletionPopup, setShowCompletionPopup] =
+    useState<boolean>(false);
+  const [copySuccess, setCopySuccess] = useState<boolean>(false);
   const [str, setStr] = useState<string>("");
 
   const timer = (seconds: number, callback: () => void) => {
@@ -64,10 +66,10 @@ export default function Play() {
           <Tracker
             hintCount={hintCount}
             setHintCount={setHintCount}
+            setHintsUsed={setHintsUsed}
             wordsFound={wordsFound}
             setShowHint={setShowHint}
             setShowCompletionPopup={setShowCompletionPopup}
-            str={str}
             setStr={setStr}
           />
         </div>
@@ -104,7 +106,7 @@ export default function Play() {
             </div>
             <p className="text-sm">
               Nice job finding the theme words 🔵 and <br />
-              Spangram 🟡. You used {hintCount} hints 💡.
+              Spangram 🟡. You used {hintsUsed} hints 💡.
             </p>
             <div className="mt-4 flex flex-col gap-2">
               <button

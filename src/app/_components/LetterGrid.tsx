@@ -7,7 +7,7 @@ interface LetterGridProps {
   showHint: boolean;
   setShowHint: React.Dispatch<React.SetStateAction<boolean>>;
   str: string;
-  setStr: (value: string) => void;
+  setStr: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const LetterGrid: React.FC<LetterGridProps> = ({
@@ -22,7 +22,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectBlueIds, setSelectedBlueIds] = useState<string[]>([]);
   const [selectGoldIds, setSelectedGoldIds] = useState<string[]>([]);
-  const [hintsUsed, setHintsUsed] = useState(0);
+  const [hintsUsed, setHintsUsed] = useState<number>(0);
   const [wordList, setWordList] = useState<string[]>([]);
 
   const spangram = ["2-0", "3-1", "4-1", "5-2", "4-3", "3-4", "3-5"];
@@ -156,12 +156,12 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     } else if (checkArrayMatch(selectedIds, ans_coordinates)) {
       console.log("ANS FOUND, BLUE");
       setWordsFound((wordsFound) => wordsFound + 1);
-      setStr(str + "🔵");
+      setStr((prevStr) => prevStr + "🔵");
       setSelectedBlueIds((prevIds) => [...prevIds, ...selectedIds]);
       clearSelectedLetters(2);
     } else if (checkArrayMatch(selectedIds, spangram)) {
       setSelectedLetters("SPANGRAM!");
-      setStr(str + "🟡");
+      setStr((prevStr) => prevStr + "🟡");
       setWordsFound((wordsFound) => wordsFound + 1);
       setSelectedGoldIds(selectedIds);
       clearSelectedLetters(3);
