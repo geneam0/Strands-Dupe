@@ -74,7 +74,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       setShowHint(false);
       setHintsUsed((hintsUsed) => hintsUsed + 1);
     }
-  });
+  }, [showHint, setShowHint]);
 
   const timer = (seconds: number, callback: () => void) => {
     setTimeout(callback, seconds * 1000);

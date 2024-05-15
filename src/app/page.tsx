@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { api } from "~/trpc/server";
 import Image from "next/image";
 
 export default function Home() {

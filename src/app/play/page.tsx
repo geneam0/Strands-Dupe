@@ -1,9 +1,7 @@
 "use client";
-import Link from "next/link";
 import LetterGrid from "../_components/LetterGrid";
 import Tracker from "../_components/Tracker";
 import React, { useState, useEffect } from "react";
-import { api } from "~/trpc/server";
 
 export default function Play() {
   const [hintCount, setHintCount] = useState(0);
