@@ -1,14 +1,25 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-const LetterGrid: React.FC = () => {
+interface LetterGridProps {
+  setHintCount: React.Dispatch<React.SetStateAction<number>>;
+  setWordsFound: React.Dispatch<React.SetStateAction<number>>;
+  showHint: boolean;
+  setShowHint: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const LetterGrid: React.FC<LetterGridProps> = ({
+  setHintCount,
+  setWordsFound,
+  showHint,
+  setShowHint,
+}) => {
   const [selectedLetters, setSelectedLetters] = useState<string>("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectBlueIds, setSelectedBlueIds] = useState<string[]>([]);
   const [selectGoldIds, setSelectedGoldIds] = useState<string[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [wordList, setWordList] = useState<string[]>([]);
 
+  const [wordList, setWordList] = useState<string[]>([]);
   useEffect(() => {
     fetch("/words.txt")
       .then((response) => {
@@ -25,20 +36,45 @@ const LetterGrid: React.FC = () => {
       });
   }, []);
 
-  const [hints, setHints] = useState(0);
-  const answerList = ["HOUND"];
-  const spangram = "HUSKY";
-
-  const letters = [
-    ["Y", "R", "E", "O", "U", "D"],
-    ["K", "X", "H", "E", "N", "P"],
-    ["S", "O", "P", "R", "H", "E"],
-    ["U", "B", "G", "I", "D", "H"],
-    ["H", "O", "E", "I", "L", "S"],
-    ["D", "L", "L", "B", "A", "E"],
-    ["O", "E", "O", "E", "G", "E"],
-    ["C", "L", "D", "O", "P", "L"],
+  const answerList = [
+    "THEYTHEM",
+    "SMOOCH",
+    "BANDANA",
+    "LADY",
+    "WAGNER",
+    "READ",
+    "TAURUS",
   ];
+  const spangram = "GRUBBER";
+  const letters = [
+    ["R", "N", "G", "A", "A", "N"],
+    ["L", "E", "W", "B", "D", "A"],
+    ["G", "A", "T", "A", "A", "N"],
+    ["M", "R", "D", "U", "E", "R"],
+    ["E", "U", "Y", "B", "R", "R"],
+    ["H", "T", "B", "U", "S", "E"],
+    ["H", "O", "Y", "E", "A", "D"],
+    ["C", "O", "M", "S", "H", "T"],
+  ];
+
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const ans_coordinates = [
+    ["4-5", "5-5", "6-4", "6-5"], // READ
+    ["0-0", "0-1", "0-2", "0-3", "1-1", "1-2"], // WAGNER
+    ["6-0", "6-1", "7-0", "7-1", "7-2", "7-3"], // SMOOCH
+    ["0-4", "0-5", "1-3", "1-4", "1-5", "2-4", "2-5"], // BANDANA
+    ["2-2", "2-3", "3-3", "4-4", "5-3", "5-4"], // TAURUS
+    ["3-0", "4-0", "5-0", "5-1", "6-2", "6-3", "7-4", "7-5"], // THEYTHEM
+    ["1-0", "2-1", "3-2", "4-2"], // LADY
+    ["2-0", "3-1", "4-1", "5-2", "4-3", "3-4", "3-5"], // GRUBBER
+  ];
+
+  useEffect(() => {
+    if (showHint) {
+      setShowHint(false);
+      setHintsUsed((hintsUsed) => hintsUsed + 1);
+    }
+  });
 
   const timer = (seconds: number, callback: () => void) => {
     setTimeout(callback, seconds * 1000);
@@ -69,62 +105,50 @@ const LetterGrid: React.FC = () => {
     const lastSelectedId =
       selectedIds.length > 0 ? selectedIds[selectedIds.length - 1] : null;
 
+    const updateSelections = (reset: boolean) => {
+      setSelectedIds(reset ? [newId] : [...selectedIds, newId]);
+      setSelectedLetters(
+        reset ? letter : (prevLetters) => prevLetters + letter,
+      );
+    };
+
     if (currentLength === 0 || !lastSelectedId) {
-      setSelectedIds([newId]);
-      setSelectedLetters(letter);
+      updateSelections(true);
     } else if (currentLength < 20 && isAdjacent(lastSelectedId, newId)) {
-      setSelectedIds([...selectedIds, newId]);
-      setSelectedLetters((prevLetters) => prevLetters + letter);
+      updateSelections(false);
     } else {
-      setSelectedIds([newId]);
-      setSelectedLetters(letter);
+      updateSelections(true);
     }
   };
 
-  const checkWordList = (
-    letter: string,
-    rowIndex: number,
-    colIndex: number,
-  ) => {
-    const newId = `${rowIndex}-${colIndex}`;
+  const checkWordList = () => {
     const currentLength = selectedLetters.length;
+    const clearSelectedLetters = (delay: number) => {
+      timer(delay, () => {
+        setSelectedLetters("");
+      });
+    };
+
     if (currentLength <= 3) {
       setSelectedLetters("Too short");
-      setSelectedIds([]);
-      timer(1, () => {
-        setSelectedLetters("");
-      });
+      clearSelectedLetters(1);
     } else if (answerList.includes(selectedLetters)) {
-      timer(2, () => {
-        setSelectedLetters("");
-      });
-      const newBlueIds = [...selectBlueIds];
-      for (const id of selectedIds) {
-        newBlueIds.push(id);
-      }
-      setSelectedBlueIds(newBlueIds);
-      setSelectedIds([]);
+      setWordsFound((wordsFound) => wordsFound + 1);
+      setSelectedBlueIds((prevIds) => [...prevIds, ...selectedIds]);
+      clearSelectedLetters(2);
     } else if (selectedLetters === spangram) {
       setSelectedLetters("SPANGRAM!");
-      timer(3, () => {
-        setSelectedLetters("");
-      });
+      setWordsFound((wordsFound) => wordsFound + 1);
       setSelectedGoldIds(selectedIds);
-      setSelectedIds([]);
+      clearSelectedLetters(3);
     } else if (wordList.includes(selectedLetters)) {
-      setHints((hints) => hints + 1);
-      timer(1, () => {
-        setSelectedLetters("");
-      });
-      setSelectedIds([]);
-      console.log("IN WORD LIST");
+      setHintCount((hintCount) => hintCount + 1);
+      clearSelectedLetters(1);
     } else {
       setSelectedLetters("NOT IN WORD LIST");
-      timer(1, () => {
-        setSelectedLetters("");
-      });
-      setSelectedIds([]);
+      clearSelectedLetters(1);
     }
+    setSelectedIds([]);
   };
 
   const handleIsSelecting = (
@@ -134,17 +158,19 @@ const LetterGrid: React.FC = () => {
   ) => {
     const newId = `${rowIndex}-${colIndex}`;
 
-    if (selectedIds.includes(newId)) {
-      checkWordList(letter, rowIndex, colIndex);
-    } else {
-      addSelectedLetters(letter, rowIndex, colIndex);
+    if (!selectBlueIds.includes(newId) && !selectGoldIds.includes(newId)) {
+      if (selectedIds.includes(newId)) {
+        checkWordList();
+      } else {
+        addSelectedLetters(letter, rowIndex, colIndex);
+      }
     }
   };
 
   return (
     <div className="flex flex-col items-center p-5">
       <div
-        className={`mb-5 flex h-12 w-72 items-center justify-center border-2 p-2 text-center text-2xl font-bold uppercase tracking-wider text-black`}
+        className={`mb-5 flex h-12 w-72 items-center justify-center p-2 text-center text-3xl font-bold uppercase tracking-wider text-black`}
       >
         {selectedLetters}
       </div>
@@ -156,18 +182,27 @@ const LetterGrid: React.FC = () => {
               const isBrownSelected = selectedIds.includes(letterId);
               const isBlueSelected = selectBlueIds.includes(letterId);
               const isGoldSelected = selectGoldIds.includes(letterId);
+              const isDashedSelected =
+                ans_coordinates[hintsUsed - 1]?.includes(letterId);
               return (
                 <button
                   key={colIndex}
-                  className={`m-1.25 flex h-10 w-10 items-center justify-center rounded-full border ${
+                  className={`m-1.25 flex h-10 w-10 items-center justify-center rounded-full border 
+                  ${
+                    isDashedSelected
+                      ? "border-3 border-dashed border-[#49a8c6]"
+                      : ""
+                  } 
+                  ${
                     isGoldSelected
-                      ? "bg-[#F8CB2C]"
+                      ? "border-1 border-solid border-[#F8CB2C] bg-[#F8CB2C]"
                       : isBlueSelected
-                        ? "bg-[#AEDFEE]"
+                        ? "border-1 border-solid border-[#AEDFEE] bg-[#AEDFEE]"
                         : isBrownSelected
                           ? "bg-[#DBD8C5]"
                           : "bg-white"
-                  } p-5 text-2xl font-medium text-black transition-colors duration-200`}
+                  } 
+                  p-5 text-2xl font-medium text-black transition-colors duration-200`}
                   onMouseDown={() =>
                     handleIsSelecting(letter, rowIndex, colIndex)
                   }

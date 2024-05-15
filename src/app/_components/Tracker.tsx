@@ -1,10 +1,19 @@
 "use client";
 import React, { useState } from "react";
 
-const Tracker: React.FC = () => {
-  const [hintCount, setHintCount] = useState(0);
-  const [wordsFound, setWordsFound] = useState(0);
+interface TrackerProps {
+  hintCount: number;
+  setHintCount: React.Dispatch<React.SetStateAction<number>>;
+  wordsFound: number;
+  setShowHint: (value: boolean) => void;
+}
 
+const Tracker: React.FC<TrackerProps> = ({
+  hintCount,
+  setHintCount,
+  wordsFound,
+  setShowHint,
+}) => {
   return (
     <div className="space-y-8">
       <div className="content-center overflow-hidden rounded-lg shadow-lg">
@@ -26,9 +35,19 @@ const Tracker: React.FC = () => {
       </div>
       <div className="mx-auto max-w-md text-center">
         <button
-          onClick={() => setHintCount(hintCount + 1)}
+          onClick={() => {
+            setHintCount(hintCount - 3);
+            setShowHint(true);
+          }}
           disabled={hintCount < 3}
-          className={`w-2/5 rounded-full py-2 text-lg font-semibold ${hintCount < 3 ? "cursor-not-allowed border-2 border-[#cfcfcf] text-[#cfcfcf]" : "bg-black text-white"}`}
+          className={`w-2/5 rounded-full py-2 text-lg font-semibold ${
+            hintCount < 3
+              ? "cursor-not-allowed border-2 border-[#cfcfcf] text-[#cfcfcf]"
+              : "text-white"
+          }`}
+          style={{
+            backgroundImage: `linear-gradient(to right, #000000 ${(hintCount / 3) * 100}%, #ffffff ${(hintCount / 3) * 100}%)`,
+          }}
         >
           Hint
         </button>
