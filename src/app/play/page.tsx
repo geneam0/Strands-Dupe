@@ -76,21 +76,20 @@ export default function Play() {
       </div>
       {showCompletionPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="relative w-1/2 rounded-lg bg-white p-8 text-center shadow-lg">
+          <div className="relative w-full rounded-lg bg-white p-8 text-center shadow-lg md:w-1/2">
             <button
               className="absolute right-3 top-3 text-sm"
               onClick={() => setShowCompletionPopup(false)}
             >
               Back to puzzle ×
             </button>
-            <br />
             <h3 className="mb-4 text-3xl font-bold">
               HAPPY BIRTHDAY <br /> CHRISTINE!
             </h3>
             <p className="text-sm text-[#52524f]">
               Strands #84
               <br />
-              &quotDeviled eggs anyone?&quot
+              "Deviled eggs anyone?"
             </p>
             <div className="my-4 text-center text-3xl">
               <h1>{strEdited}</h1>
@@ -99,16 +98,15 @@ export default function Play() {
               Nice job finding the theme words 🔵 and <br />
               Spangram 🟡. You used {hintCount} hints 💡.
             </p>
-            <br />
             <div className="mt-4 flex flex-col gap-2">
               <button
                 onClick={copyToClipboard}
-                className="m-auto w-1/2 rounded-full bg-black px-6 py-3 text-lg text-white hover:bg-gray-800"
+                className="m-auto w-3/4 rounded-full bg-black px-6 py-3 text-lg text-white hover:bg-gray-800 sm:w-1/2"
               >
                 {copySuccess ? "Copied!" : "Share Your Results"}
               </button>
               <button
-                className="m-auto w-1/2 rounded-full bg-yellow-400 px-6 py-3 text-lg text-black hover:bg-yellow-500"
+                className="m-auto w-3/4 rounded-full bg-yellow-400 px-6 py-3 text-lg text-black hover:bg-yellow-500 sm:w-1/2"
                 onClick={() => setShowCompletionPopup(false)}
               >
                 Close
