@@ -60,7 +60,10 @@ const Tracker: React.FC<TrackerProps> = ({
                 : "text-white"
           }`}
           style={{
-            backgroundImage: `linear-gradient(to right, #000000 ${(hintCount / 3) * 100}%, #ffffff ${(hintCount / 3) * 100}%)`,
+            backgroundImage:
+              wordsFound !== 8
+                ? `linear-gradient(to right, #000000 ${(hintCount / 3) * 100}%, #ffffff ${(hintCount / 3) * 100}%)`
+                : undefined,
           }}
         >
           {wordsFound === 8 ? "View Results" : "Hint"}
