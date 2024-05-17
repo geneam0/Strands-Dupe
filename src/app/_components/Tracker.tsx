@@ -56,7 +56,7 @@ const Tracker: React.FC<TrackerProps> = ({
             disabled={hintCount < 3 && wordsFound < 8}
             className={`xs:w-full w-2/5 rounded-full py-2 text-lg font-semibold ${
               wordsFound === 8
-                ? "border-2 border-black text-black"
+                ? "xs:text-xs border-2 border-black text-black"
                 : hintCount < 3
                   ? "border-2 border-[#cfcfcf] text-[#cfcfcf]"
                   : "text-white"

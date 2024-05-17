@@ -121,13 +121,10 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     };
 
     if (!lastSelectedId) {
-      console.log(1);
       updateSelections(true);
     } else if (currentLength < 20 && isAdjacent(lastSelectedId, newId)) {
-      console.log(2);
       updateSelections(false);
     } else {
-      console.log(3);
       updateSelections(true);
     }
   };
