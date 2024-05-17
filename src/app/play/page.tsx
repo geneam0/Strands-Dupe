@@ -73,7 +73,7 @@ export default function Play() {
             setStr={setStr}
           />
         </div>
-        <div className="lg:col-span-1">
+        <div className="mt-[-30px] lg:col-span-1 lg:mt-0">
           <LetterGrid
             setHintCount={setHintCount}
             setWordsFound={setWordsFound}
