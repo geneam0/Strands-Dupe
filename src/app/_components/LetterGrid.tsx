@@ -166,6 +166,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     const clearSelectedLetters = (delay: number) => {
       timer(delay, () => {
         setSelectedLetters("");
+        setSelectedIds([]);
       });
     };
     if (currentLength <= 3) {
@@ -195,7 +196,6 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       setSelectedLetters("NOT IN WORD LIST");
       clearSelectedLetters(1);
     }
-    setSelectedIds([]);
   };
 
   const handleIsSelecting = (
