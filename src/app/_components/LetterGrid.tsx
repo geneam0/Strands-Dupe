@@ -252,13 +252,25 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     }
   };
 
-  const handleTouchStart = (
-    e: React.TouchEvent<HTMLButtonElement>,
-    letter: string,
-    rowIndex: number,
-    colIndex: number,
-  ) => {
-    handleIsSelecting(letter, rowIndex, colIndex);
+  const handleTouchStart = (e: React.TouchEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Prevent scrolling when touching
+    const touch = e.touches[0];
+
+    if (touch) {
+      const targetElement = document.elementFromPoint(
+        touch.clientX,
+        touch.clientY,
+      ) as HTMLButtonElement;
+
+      if (targetElement && targetElement.tagName === "BUTTON") {
+        // Safely access dataset with null checks and default values
+        const letter = targetElement.dataset.letter ?? "";
+        const rowIndex = parseInt(targetElement.dataset.rowIndex ?? "0"); // Convert string to integer
+        const colIndex = parseInt(targetElement.dataset.colIndex ?? "0"); // Convert string to integer
+
+        handleIsSelecting(letter, rowIndex, colIndex);
+      }
+    }
   };
 
   const handleTouchEnd = () => {
@@ -314,9 +326,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
                   onMouseMove={() =>
                     handleIsDragging(letter, rowIndex, colIndex)
                   }
-                  onTouchStart={(e) =>
-                    handleTouchStart(e, letter, rowIndex, colIndex)
-                  }
+                  onTouchStart={(e) => handleTouchStart(e)}
                   onTouchMove={() => handleTouchMove}
                 >
                   {letter}
