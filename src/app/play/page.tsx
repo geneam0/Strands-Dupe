@@ -60,7 +60,7 @@ export default function Play() {
   };
 
   return (
-    <div className="xs:min-h-full lg:flex lg:min-h-screen lg:flex-col lg:items-center lg:justify-center">
+    <div className="xs:max-h-screen xs:max-w-screen flex flex-col items-center justify-center lg:min-h-screen">
       <div className="lg:grid lg:max-w-4xl lg:grid-cols-2 lg:gap-x-24">
         <div className="lg:col-span-1 lg:my-auto">
           <Tracker
