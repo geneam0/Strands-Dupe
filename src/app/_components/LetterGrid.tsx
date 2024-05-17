@@ -6,7 +6,6 @@ interface LetterGridProps {
   setWordsFound: React.Dispatch<React.SetStateAction<number>>;
   showHint: boolean;
   setShowHint: React.Dispatch<React.SetStateAction<boolean>>;
-  str: string;
   setStr: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -15,7 +14,6 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   setWordsFound,
   showHint,
   setShowHint,
-  str,
   setStr,
 }) => {
   const [selectedLetters, setSelectedLetters] = useState<string>("");
@@ -27,6 +25,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   const [isSelecting, setIsSelecting] = useState(false);
 
   const spangram = ["3-0", "4-1", "4-2", "3-2", "4-3", "3-4", "3-5"];
+  const spangram_word = "GRUBBER";
   const letters = [
     ["A", "G", "R", "B", "A", "N"],
     ["W", "N", "E", "H", "N", "D"],
@@ -45,6 +44,15 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     ["4-0", "5-0", "5-1", "5-2", "6-0", "7-1"], // TAURUS
     ["7-2", "7-3", "7-4", "7-5", "6-3", "6-4", "5-5", "4-5"], // THEYTHEM
     ["2-0", "2-1", "2-2", "3-1"], // READ
+  ];
+  const ans_words = [
+    "LADY",
+    "WAGNER",
+    "READ",
+    "SMOOCH",
+    "BANDANA",
+    "THEYTHEM",
+    "TAURUS",
   ];
 
   const timer = (seconds: number, callback: () => void) => {
@@ -156,12 +164,18 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     if (currentLength <= 3) {
       setSelectedLetters("Too short");
       clearSelectedLetters(1);
-    } else if (checkArrayMatch(selectedIds, ans_coordinates)) {
+    } else if (
+      checkArrayMatch(selectedIds, ans_coordinates) &&
+      ans_words.includes(selectedLetters)
+    ) {
       setWordsFound((wordsFound) => wordsFound + 1);
       setStr((prevStr) => prevStr + "🔵");
       setSelectedBlueIds((prevIds) => [...prevIds, ...selectedIds]);
       clearSelectedLetters(2);
-    } else if (checkArrayMatch(selectedIds, spangram)) {
+    } else if (
+      checkArrayMatch(selectedIds, spangram) &&
+      spangram_word === selectedLetters
+    ) {
       setSelectedLetters("SPANGRAM!");
       setWordsFound((wordsFound) => wordsFound + 1);
       setStr((prevStr) => prevStr + "🟡");
@@ -217,16 +231,6 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     setIsSelecting(false);
   };
 
-  const handleTouchStart = (
-    e: React.TouchEvent<HTMLButtonElement>,
-    letter: string,
-    rowIndex: number,
-    colIndex: number,
-  ) => {
-    const touch = e.touches[0];
-    handleIsSelecting(letter, rowIndex, colIndex);
-  };
-
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault(); // Prevent scrolling when touching
     const touch = e.touches[0];
@@ -239,17 +243,13 @@ const LetterGrid: React.FC<LetterGridProps> = ({
 
       if (targetElement && targetElement.tagName === "BUTTON") {
         // Safely access dataset with null checks and default values
-        const letter = targetElement.dataset.letter || "";
-        const rowIndex = targetElement.dataset.rowIndex || "0";
-        const colIndex = targetElement.dataset.colIndex || "0";
+        const letter = targetElement.dataset.letter ?? "";
+        const rowIndex = targetElement.dataset.rowIndex ?? "0";
+        const colIndex = targetElement.dataset.colIndex ?? "0";
 
         handleIsDragging(letter, parseInt(rowIndex), parseInt(colIndex));
       }
     }
-  };
-
-  const handleTouchEnd = () => {
-    setIsSelecting(false);
   };
 
   return (
@@ -261,11 +261,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       >
         {selectedLetters}
       </div>
-      <div
-        className="grid grid-cols-6 gap-1"
-        onMouseUp={handleMouseUp}
-        onTouchEnd={handleTouchEnd}
-      >
+      <div className="grid grid-cols-6 gap-1" onMouseUp={handleMouseUp}>
         {letters.map((row, rowIndex) => (
           <React.Fragment key={rowIndex}>
             {row.map((letter, colIndex) => {
@@ -300,9 +296,6 @@ const LetterGrid: React.FC<LetterGridProps> = ({
                   }
                   onMouseMove={() =>
                     handleIsDragging(letter, rowIndex, colIndex)
-                  }
-                  onTouchStart={(e) =>
-                    handleTouchStart(e, letter, rowIndex, colIndex)
                   }
                   onTouchMove={() => handleTouchMove}
                 >

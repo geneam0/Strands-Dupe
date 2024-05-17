@@ -79,7 +79,6 @@ export default function Play() {
             setWordsFound={setWordsFound}
             showHint={showHint}
             setShowHint={setShowHint}
-            str={str}
             setStr={setStr}
           />
         </div>
