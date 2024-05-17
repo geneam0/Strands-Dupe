@@ -243,34 +243,23 @@ const LetterGrid: React.FC<LetterGridProps> = ({
 
       if (targetElement && targetElement.tagName === "BUTTON") {
         // Safely access dataset with null checks and default values
-        const letter = targetElement.dataset.letter ?? "";
-        const rowIndex = targetElement.dataset.rowIndex ?? "0";
-        const colIndex = targetElement.dataset.colIndex ?? "0";
+        const letter = targetElement.dataset.letter || "";
+        const rowIndex = targetElement.dataset.rowIndex || "0";
+        const colIndex = targetElement.dataset.colIndex || "0";
 
         handleIsDragging(letter, parseInt(rowIndex), parseInt(colIndex));
       }
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // Prevent scrolling when touching
+  const handleTouchStart = (
+    e: React.TouchEvent<HTMLButtonElement>,
+    letter: string,
+    rowIndex: number,
+    colIndex: number,
+  ) => {
     const touch = e.touches[0];
-
-    if (touch) {
-      const targetElement = document.elementFromPoint(
-        touch.clientX,
-        touch.clientY,
-      ) as HTMLButtonElement;
-
-      if (targetElement && targetElement.tagName === "BUTTON") {
-        // Safely access dataset with null checks and default values
-        const letter = targetElement.dataset.letter ?? "";
-        const rowIndex = parseInt(targetElement.dataset.rowIndex ?? "0"); // Convert string to integer
-        const colIndex = parseInt(targetElement.dataset.colIndex ?? "0"); // Convert string to integer
-
-        handleIsSelecting(letter, rowIndex, colIndex);
-      }
-    }
+    handleIsSelecting(letter, rowIndex, colIndex);
   };
 
   const handleTouchEnd = () => {
