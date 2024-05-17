@@ -258,7 +258,6 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     rowIndex: number,
     colIndex: number,
   ) => {
-    const touch = e.touches[0];
     handleIsSelecting(letter, rowIndex, colIndex);
   };
 
@@ -315,7 +314,9 @@ const LetterGrid: React.FC<LetterGridProps> = ({
                   onMouseMove={() =>
                     handleIsDragging(letter, rowIndex, colIndex)
                   }
-                  onTouchStart={(e) => handleTouchStart(e)}
+                  onTouchStart={(e) =>
+                    handleTouchStart(e, letter, rowIndex, colIndex)
+                  }
                   onTouchMove={() => handleTouchMove}
                 >
                   {letter}
