@@ -191,15 +191,29 @@ const LetterGrid: React.FC<LetterGridProps> = ({
         checkWordList();
       } else {
         // Add selected words
+        setIsSelecting(true);
+        addSelectedLetters(letter, rowIndex, colIndex);
+      }
+    }
+  };
+
+  const handleIsDragging = (
+    letter: string,
+    rowIndex: number,
+    colIndex: number,
+  ) => {
+    const newId = `${rowIndex}-${colIndex}`;
+
+    // If selected button is blue or gold, it cannot select it again
+    if (!selectBlueIds.includes(newId) && !selectGoldIds.includes(newId)) {
+      // Enter as word
+      if (!selectedIds.includes(newId) && isSelecting) {
         addSelectedLetters(letter, rowIndex, colIndex);
       }
     }
   };
 
   const handleMouseUp = () => {
-    if (selectedIds.length > 0) {
-      checkWordList();
-    }
     setIsSelecting(false);
   };
 
@@ -212,7 +226,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       >
         {selectedLetters}
       </div>
-      <div className="grid grid-cols-6 gap-1">
+      <div className="grid grid-cols-6 gap-1" onMouseUp={handleMouseUp}>
         {letters.map((row, rowIndex) => (
           <React.Fragment key={rowIndex}>
             {row.map((letter, colIndex) => {
@@ -222,6 +236,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
               const isGoldSelected = selectGoldIds.includes(letterId);
               const isDashedSelected =
                 ans_coordinates[hintsUsed - 1]?.includes(letterId);
+
               return (
                 <button
                   key={colIndex}
@@ -243,6 +258,9 @@ const LetterGrid: React.FC<LetterGridProps> = ({
                   p-5 text-2xl font-medium text-black transition-colors duration-200`}
                   onMouseDown={() =>
                     handleIsSelecting(letter, rowIndex, colIndex)
+                  }
+                  onMouseMove={() =>
+                    handleIsDragging(letter, rowIndex, colIndex)
                   }
                 >
                   {letter}
