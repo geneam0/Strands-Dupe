@@ -24,26 +24,27 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   const [selectGoldIds, setSelectedGoldIds] = useState<string[]>([]);
   const [hintsUsed, setHintsUsed] = useState<number>(0);
   const [wordList, setWordList] = useState<string[]>([]);
+  const [isSelecting, setIsSelecting] = useState(false);
 
   const spangram = ["3-0", "4-1", "4-2", "3-2", "4-3", "3-4", "3-5"];
   const letters = [
-    ["W", "G", "N", "B", "A", "N"],
-    ["A", "R", "E", "H", "N", "D"],
-    ["L", "A", "D", "A", "C", "A"],
-    ["G", "Y", "B", "O", "E", "R"],
+    ["A", "G", "R", "B", "A", "N"],
+    ["W", "N", "E", "H", "N", "D"],
+    ["D", "E", "R", "A", "C", "A"],
+    ["G", "A", "B", "O", "E", "R"],
     ["U", "R", "U", "B", "O", "T"],
-    ["R", "A", "T", "D", "M", "H"],
-    ["U", "E", "A", "H", "E", "S"],
-    ["R", "S", "M", "E", "T", "Y"],
+    ["R", "A", "T", "Y", "M", "H"],
+    ["U", "A", "D", "H", "E", "S"],
+    ["L", "S", "M", "E", "T", "Y"],
   ];
   const ans_coordinates = [
-    ["7-0", "6-1", "6-2", "5-3"], // READ
+    ["7-0", "6-1", "6-2", "5-3"], // LADY
     ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2"], // WAGNER
     ["6-5", "5-4", "4-4", "3-3", "2-4", "1-3"], // SMOOCH
     ["0-3", "0-4", "0-5", "1-4", "1-5", "2-3", "2-5"], // BANDANA
     ["4-0", "5-0", "5-1", "5-2", "6-0", "7-1"], // TAURUS
     ["7-2", "7-3", "7-4", "7-5", "6-3", "6-4", "5-5", "4-5"], // THEYTHEM
-    ["2-0", "2-1", "2-2", "3-1"], // LADY
+    ["2-0", "2-1", "2-2", "3-1"], // READ
   ];
 
   const timer = (seconds: number, callback: () => void) => {
@@ -79,28 +80,6 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       });
   }, []);
 
-  function isArrayEqualUnordered(a: string[], b: string[]): boolean {
-    const sortedA = a.slice().sort();
-    const sortedB = b.slice().sort();
-    return (
-      sortedA.length === sortedB.length &&
-      sortedA.every((element, index) => element === sortedB[index])
-    );
-  }
-
-  function checkArrayMatch(
-    arrA: string[],
-    arrB: string[] | string[][],
-  ): boolean {
-    if (Array.isArray(arrB[0])) {
-      return (arrB as string[][]).some((subArray) => {
-        return isArrayEqualUnordered(arrA, subArray);
-      });
-    } else {
-      return isArrayEqualUnordered(arrA, arrB as string[]);
-    }
-  }
-
   const addSelectedLetters = (
     letter: string,
     rowIndex: number,
@@ -134,13 +113,38 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     };
 
     if (currentLength === 0 || !lastSelectedId) {
+      console.log(1);
       updateSelections(true);
     } else if (currentLength < 20 && isAdjacent(lastSelectedId, newId)) {
+      console.log(2);
       updateSelections(false);
     } else {
+      console.log(3);
       updateSelections(true);
     }
   };
+
+  function isArrayEqualUnordered(a: string[], b: string[]): boolean {
+    const sortedA = a.slice().sort();
+    const sortedB = b.slice().sort();
+    return (
+      sortedA.length === sortedB.length &&
+      sortedA.every((element, index) => element === sortedB[index])
+    );
+  }
+
+  function checkArrayMatch(
+    arrA: string[],
+    arrB: string[] | string[][],
+  ): boolean {
+    if (Array.isArray(arrB[0])) {
+      return (arrB as string[][]).some((subArray) => {
+        return isArrayEqualUnordered(arrA, subArray);
+      });
+    } else {
+      return isArrayEqualUnordered(arrA, arrB as string[]);
+    }
+  }
 
   const checkWordList = () => {
     const currentLength = selectedLetters.length;
@@ -149,20 +153,18 @@ const LetterGrid: React.FC<LetterGridProps> = ({
         setSelectedLetters("");
       });
     };
-    console.log(selectedIds);
     if (currentLength <= 3) {
       setSelectedLetters("Too short");
       clearSelectedLetters(1);
     } else if (checkArrayMatch(selectedIds, ans_coordinates)) {
-      console.log("ANS FOUND, BLUE");
       setWordsFound((wordsFound) => wordsFound + 1);
       setStr((prevStr) => prevStr + "🔵");
       setSelectedBlueIds((prevIds) => [...prevIds, ...selectedIds]);
       clearSelectedLetters(2);
     } else if (checkArrayMatch(selectedIds, spangram)) {
       setSelectedLetters("SPANGRAM!");
-      setStr((prevStr) => prevStr + "🟡");
       setWordsFound((wordsFound) => wordsFound + 1);
+      setStr((prevStr) => prevStr + "🟡");
       setSelectedGoldIds(selectedIds);
       clearSelectedLetters(3);
     } else if (wordList.includes(selectedLetters)) {
@@ -182,13 +184,23 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   ) => {
     const newId = `${rowIndex}-${colIndex}`;
 
+    // If selected button is blue or gold, it cannot select it again
     if (!selectBlueIds.includes(newId) && !selectGoldIds.includes(newId)) {
+      // Enter as word
       if (selectedIds.includes(newId)) {
         checkWordList();
       } else {
+        // Add selected words
         addSelectedLetters(letter, rowIndex, colIndex);
       }
     }
+  };
+
+  const handleMouseUp = () => {
+    if (selectedIds.length > 0) {
+      checkWordList();
+    }
+    setIsSelecting(false);
   };
 
   return (
