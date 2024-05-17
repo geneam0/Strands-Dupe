@@ -252,6 +252,19 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     }
   };
 
+  const handleTouchStart = (
+    e: React.TouchEvent<HTMLButtonElement>,
+    letter: string,
+    rowIndex: number,
+    colIndex: number,
+  ) => {
+    handleIsSelecting(letter, rowIndex, colIndex);
+  };
+
+  const handleTouchEnd = () => {
+    setIsSelecting(false);
+  };
+
   return (
     <div className="flex flex-col items-center p-5">
       <div
@@ -261,7 +274,11 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       >
         {selectedLetters}
       </div>
-      <div className="grid grid-cols-6 gap-1" onMouseUp={handleMouseUp}>
+      <div
+        className="grid grid-cols-6 gap-1"
+        onMouseUp={handleMouseUp}
+        onTouchEnd={handleTouchEnd}
+      >
         {letters.map((row, rowIndex) => (
           <React.Fragment key={rowIndex}>
             {row.map((letter, colIndex) => {
@@ -296,6 +313,9 @@ const LetterGrid: React.FC<LetterGridProps> = ({
                   }
                   onMouseMove={() =>
                     handleIsDragging(letter, rowIndex, colIndex)
+                  }
+                  onTouchStart={(e) =>
+                    handleTouchStart(e, letter, rowIndex, colIndex)
                   }
                   onTouchMove={() => handleTouchMove}
                 >
