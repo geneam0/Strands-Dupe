@@ -34,40 +34,43 @@ const Tracker: React.FC<TrackerProps> = ({
           </p>
         </div>
       </div>
-      <div>
-        <h1 className="xs:text-right lg:text-center lg:text-2xl lg:text-black">
-          <strong>{wordsFound}</strong> of <strong>8</strong> theme words found.
-        </h1>
-      </div>
-      <div className="xs:text-left lg:mx-auto lg:max-w-md lg:text-center">
-        <button
-          onClick={() => {
-            if (wordsFound === 8) {
-              setShowCompletionPopup(true);
-            } else {
-              setHintCount(hintCount - 3);
-              setHintsUsed((hintsUsed) => hintsUsed + 1);
-              setStr((prevStr) => prevStr + "💡");
-              setShowHint(true);
-            }
-          }}
-          disabled={hintCount < 3 && wordsFound < 8}
-          className={`xs:w-1/5 w-2/5 rounded-full py-2 text-lg font-semibold ${
-            wordsFound === 8
-              ? "border-2 border-black text-black"
-              : hintCount < 3
-                ? "border-2 border-[#cfcfcf] text-[#cfcfcf]"
-                : "text-white"
-          }`}
-          style={{
-            backgroundImage:
-              wordsFound !== 8
-                ? `linear-gradient(to right, #000000 ${(hintCount / 3) * 100}%, #ffffff ${(hintCount / 3) * 100}%)`
-                : undefined,
-          }}
-        >
-          {wordsFound === 8 ? "View Results" : "Hint"}
-        </button>
+      <div className="flex items-center justify-center gap-6 pt-2 lg:flex lg:flex-col lg:items-center lg:justify-center lg:gap-6">
+        <div className="xs:order-2">
+          <h1 className="xs:text-end lg:text-center lg:text-2xl lg:text-black">
+            <strong>{wordsFound}</strong> of <strong>8</strong> theme words
+            found.
+          </h1>
+        </div>
+        <div className="xs:text-start xs:w-1/5 xs:order-1 lg:mx-auto lg:w-2/5 lg:max-w-md lg:text-center">
+          <button
+            onClick={() => {
+              if (wordsFound === 8) {
+                setShowCompletionPopup(true);
+              } else {
+                setHintCount(hintCount - 3);
+                setHintsUsed((hintsUsed) => hintsUsed + 1);
+                setStr((prevStr) => prevStr + "💡");
+                setShowHint(true);
+              }
+            }}
+            disabled={hintCount < 3 && wordsFound < 8}
+            className={`xs:w-full w-2/5 rounded-full py-2 text-lg font-semibold ${
+              wordsFound === 8
+                ? "border-2 border-black text-black"
+                : hintCount < 3
+                  ? "border-2 border-[#cfcfcf] text-[#cfcfcf]"
+                  : "text-white"
+            }`}
+            style={{
+              backgroundImage:
+                wordsFound !== 8
+                  ? `linear-gradient(to right, #000000 ${(hintCount / 3) * 100}%, #ffffff ${(hintCount / 3) * 100}%)`
+                  : undefined,
+            }}
+          >
+            {wordsFound === 8 ? "View Results" : "Hint"}
+          </button>
+        </div>
       </div>
     </div>
   );
