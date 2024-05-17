@@ -60,9 +60,9 @@ export default function Play() {
   };
 
   return (
-    <div className="lg:flex lg:min-h-screen lg:flex-col lg:items-center lg:justify-center">
+    <div className="xs:min-h-full lg:flex lg:min-h-screen lg:flex-col lg:items-center lg:justify-center">
       <div className="lg:grid lg:max-w-4xl lg:grid-cols-2 lg:gap-x-24">
-        <div className="md:items-center lg:col-span-1 lg:my-auto">
+        <div className="lg:col-span-1 lg:my-auto">
           <Tracker
             hintCount={hintCount}
             setHintCount={setHintCount}

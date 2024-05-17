@@ -35,11 +35,11 @@ const Tracker: React.FC<TrackerProps> = ({
         </div>
       </div>
       <div>
-        <h1 className="md:items:end text-center text-2xl text-black">
+        <h1 className="xs:text-right lg:text-center lg:text-2xl lg:text-black">
           <strong>{wordsFound}</strong> of <strong>8</strong> theme words found.
         </h1>
       </div>
-      <div className="md:items:end mx-auto max-w-md text-center">
+      <div className="xs:text-left lg:mx-auto lg:max-w-md lg:text-center">
         <button
           onClick={() => {
             if (wordsFound === 8) {
@@ -52,7 +52,7 @@ const Tracker: React.FC<TrackerProps> = ({
             }
           }}
           disabled={hintCount < 3 && wordsFound < 8}
-          className={`w-2/5 rounded-full py-2 text-lg font-semibold ${
+          className={`xs:w-1/5 w-2/5 rounded-full py-2 text-lg font-semibold ${
             wordsFound === 8
               ? "border-2 border-black text-black"
               : hintCount < 3

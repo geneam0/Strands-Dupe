@@ -11,6 +11,9 @@ export default {
       spacing: {
         "1.25": "0.3rem",
       },
+      screens: {
+        xs: "390px", // Adds the 'xs' breakpoint at 390px
+      },
     },
   },
   plugins: [],

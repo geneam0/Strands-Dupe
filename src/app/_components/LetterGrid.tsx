@@ -266,7 +266,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center p-5">
+    <div className="xs:items-center flex flex-col p-5">
       <div
         className={`mb-5 flex h-12 w-72 items-center justify-center p-2 text-center 
         ${selectedLetters === "NOT IN WORD LIST" ? "text-2xl" : "text-3xl"} 
