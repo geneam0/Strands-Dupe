@@ -217,6 +217,41 @@ const LetterGrid: React.FC<LetterGridProps> = ({
     setIsSelecting(false);
   };
 
+  const handleTouchStart = (
+    e: React.TouchEvent<HTMLButtonElement>,
+    letter: string,
+    rowIndex: number,
+    colIndex: number,
+  ) => {
+    const touch = e.touches[0];
+    handleIsSelecting(letter, rowIndex, colIndex);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault(); // Prevent scrolling when touching
+    const touch = e.touches[0];
+
+    if (touch) {
+      const targetElement = document.elementFromPoint(
+        touch.clientX,
+        touch.clientY,
+      ) as HTMLButtonElement;
+
+      if (targetElement && targetElement.tagName === "BUTTON") {
+        // Safely access dataset with null checks and default values
+        const letter = targetElement.dataset.letter || "";
+        const rowIndex = targetElement.dataset.rowIndex || "0";
+        const colIndex = targetElement.dataset.colIndex || "0";
+
+        handleIsDragging(letter, parseInt(rowIndex), parseInt(colIndex));
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsSelecting(false);
+  };
+
   return (
     <div className="flex flex-col items-center p-5">
       <div
@@ -226,7 +261,11 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       >
         {selectedLetters}
       </div>
-      <div className="grid grid-cols-6 gap-1" onMouseUp={handleMouseUp}>
+      <div
+        className="grid grid-cols-6 gap-1"
+        onMouseUp={handleMouseUp}
+        onTouchEnd={handleTouchEnd}
+      >
         {letters.map((row, rowIndex) => (
           <React.Fragment key={rowIndex}>
             {row.map((letter, colIndex) => {
@@ -262,6 +301,10 @@ const LetterGrid: React.FC<LetterGridProps> = ({
                   onMouseMove={() =>
                     handleIsDragging(letter, rowIndex, colIndex)
                   }
+                  onTouchStart={(e) =>
+                    handleTouchStart(e, letter, rowIndex, colIndex)
+                  }
+                  onTouchMove={() => handleTouchMove}
                 >
                   {letter}
                 </button>
