@@ -243,9 +243,9 @@ const LetterGrid: React.FC<LetterGridProps> = ({
 
       if (targetElement && targetElement.tagName === "BUTTON") {
         // Safely access dataset with null checks and default values
-        const letter = targetElement.dataset.letter || "";
-        const rowIndex = targetElement.dataset.rowIndex || "0";
-        const colIndex = targetElement.dataset.colIndex || "0";
+        const letter = targetElement.dataset.letter ?? "";
+        const rowIndex = targetElement.dataset.rowIndex ?? "0";
+        const colIndex = targetElement.dataset.colIndex ?? "0";
 
         handleIsDragging(letter, parseInt(rowIndex), parseInt(colIndex));
       }
