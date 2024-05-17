@@ -73,6 +73,16 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   }, [hintsUsed, setHintsUsed]);
 
   useEffect(() => {
+    if (selectedLetters.length !== selectedIds.length) {
+      console.warn(
+        `Data mismatch: ${selectedLetters.length} letters for ${selectedIds.length} IDs`,
+      );
+      setSelectedLetters("");
+      setSelectedIds([]);
+    }
+  }, [selectedLetters, selectedIds]);
+
+  useEffect(() => {
     fetch("/words.txt")
       .then((response) => {
         if (!response.ok) {
@@ -263,7 +273,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   };
 
   return (
-    <div className="xs:items-center flex flex-col p-5">
+    <div className="flex flex-col p-5 xs:items-center">
       <div
         className={`mb-5 flex h-12 w-72 items-center justify-center p-2 text-center 
         ${selectedLetters === "NOT IN WORD LIST" ? "text-2xl" : "text-3xl"} 
