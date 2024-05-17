@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 export default function Play() {
   const [hintCount, setHintCount] = useState<number>(0);
   const [hintsUsed, setHintsUsed] = useState<number>(0);
-  const [wordsFound, setWordsFound] = useState<number>(8);
+  const [wordsFound, setWordsFound] = useState<number>(0);
   const [showHint, setShowHint] = useState<boolean>(false);
   const [showCompletionPopup, setShowCompletionPopup] =
     useState<boolean>(false);
