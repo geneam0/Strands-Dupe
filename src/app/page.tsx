@@ -22,7 +22,7 @@ export default function Home() {
             Play
           </a>
         </Link>
-        <p className="text-m">Born May 4, 1997</p>
+        <p className="text-m">Born May 4, 1998</p>
         <p className="text-m">Puzzle by Gene Lam</p>
       </div>
     </main>
