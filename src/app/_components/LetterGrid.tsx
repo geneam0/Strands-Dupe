@@ -1,5 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import {
+  spangramWord,
+  spangram,
+  letters,
+  ansCoordinates,
+  ansWords,
+} from "./gameConstants";
 
 interface LetterGridProps {
   setHintCount: React.Dispatch<React.SetStateAction<number>>;
@@ -23,37 +30,6 @@ const LetterGrid: React.FC<LetterGridProps> = ({
   const [hintsUsed, setHintsUsed] = useState<number>(0);
   const [wordList, setWordList] = useState<string[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
-
-  const spangram = ["3-0", "4-1", "4-2", "3-2", "4-3", "3-4", "3-5"];
-  const spangram_word = "GRUBBER";
-  const letters = [
-    ["A", "G", "R", "B", "A", "N"],
-    ["W", "N", "E", "H", "N", "D"],
-    ["D", "E", "R", "A", "C", "A"],
-    ["G", "A", "B", "O", "E", "R"],
-    ["U", "R", "U", "B", "O", "T"],
-    ["R", "A", "T", "Y", "M", "H"],
-    ["U", "A", "D", "H", "E", "S"],
-    ["L", "S", "M", "E", "T", "Y"],
-  ];
-  const ans_coordinates = [
-    ["7-0", "6-1", "6-2", "5-3"], // LADY
-    ["0-0", "0-1", "0-2", "1-0", "1-1", "1-2"], // WAGNER
-    ["6-5", "5-4", "4-4", "3-3", "2-4", "1-3"], // SMOOCH
-    ["0-3", "0-4", "0-5", "1-4", "1-5", "2-3", "2-5"], // BANDANA
-    ["4-0", "5-0", "5-1", "5-2", "6-0", "7-1"], // TAURUS
-    ["7-2", "7-3", "7-4", "7-5", "6-3", "6-4", "5-5", "4-5"], // THEYTHEM
-    ["2-0", "2-1", "2-2", "3-1"], // READ
-  ];
-  const ans_words = [
-    "LADY",
-    "WAGNER",
-    "READ",
-    "SMOOCH",
-    "BANDANA",
-    "THEYTHEM",
-    "TAURUS",
-  ];
 
   const timer = (seconds: number, callback: () => void) => {
     setTimeout(callback, seconds * 1000);
@@ -173,8 +149,8 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       setSelectedLetters("Too short");
       clearSelectedLetters(1);
     } else if (
-      checkArrayMatch(selectedIds, ans_coordinates) &&
-      ans_words.includes(selectedLetters)
+      checkArrayMatch(selectedIds, ansCoordinates) &&
+      ansWords.includes(selectedLetters)
     ) {
       setWordsFound((wordsFound) => wordsFound + 1);
       setStr((prevStr) => prevStr + "🔵");
@@ -182,7 +158,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
       clearSelectedLetters(2);
     } else if (
       checkArrayMatch(selectedIds, spangram) &&
-      spangram_word === selectedLetters
+      spangramWord === selectedLetters
     ) {
       setSelectedLetters("SPANGRAM!");
       setWordsFound((wordsFound) => wordsFound + 1);
@@ -290,7 +266,7 @@ const LetterGrid: React.FC<LetterGridProps> = ({
               const isBlueSelected = selectBlueIds.includes(letterId);
               const isGoldSelected = selectGoldIds.includes(letterId);
               const isDashedSelected =
-                ans_coordinates[hintsUsed - 1]?.includes(letterId);
+                ansCoordinates[hintsUsed - 1]?.includes(letterId);
 
               return (
                 <button
